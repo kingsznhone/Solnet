@@ -3,6 +3,7 @@ using Solnet.KeyStore.Crypto;
 using Solnet.KeyStore.Model;
 using Solnet.KeyStore.Serialization;
 using System;
+using System.Security.Cryptography;
 
 namespace Solnet.KeyStore.Services
 {
@@ -25,7 +26,13 @@ namespace Solnet.KeyStore.Services
 
         protected override byte[] GenerateDerivedKey(string password, byte[] salt, Pbkdf2Params kdfParams)
         {
-            return KeyStoreCrypto.GeneratePbkdf2Sha256DerivedKey(password, salt, kdfParams.Count, kdfParams.Dklen);
+            return Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                kdfParams.Count,
+                HashAlgorithmName.SHA256,
+                kdfParams.Dklen
+            );
         }
 
         protected override Pbkdf2Params GetDefaultParams()
@@ -49,7 +56,7 @@ namespace Solnet.KeyStore.Services
             if (keyStore == null) throw new ArgumentNullException(nameof(keyStore));
 
             return KeyStoreCrypto.DecryptPbkdf2Sha256(password, keyStore.Crypto.Mac.HexToByteArray(),
-                keyStore.Crypto.CipherParams.Iv.HexToByteArray(),
+                keyStore.Crypto.CipherParams.Nonce.HexToByteArray(),
                 keyStore.Crypto.CipherText.HexToByteArray(),
                 keyStore.Crypto.Kdfparams.Count,
                 keyStore.Crypto.Kdfparams.Salt.HexToByteArray(),

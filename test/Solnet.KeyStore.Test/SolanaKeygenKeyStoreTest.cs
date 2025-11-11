@@ -33,17 +33,21 @@ namespace Solnet.KeyStore.Test
         };
 
         [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException))]
         public void TestKeyStoreFileNotFound()
         {
-            _ = KeyStoreService.RestoreKeystoreFromFile(InvalidPath);
+            Assert.Throws<FileNotFoundException>(() =>
+            {
+                _ = KeyStoreService.RestoreKeystoreFromFile(InvalidPath);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestKeyStoreInvalidEmptyFilePath()
         {
-            _ = KeyStoreService.RestoreKeystoreFromFile(InvalidEmptyFilePath);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                _ = KeyStoreService.RestoreKeystoreFromFile(InvalidEmptyFilePath);
+            });
         }
 
         [TestMethod]
@@ -55,10 +59,12 @@ namespace Solnet.KeyStore.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestKeyStoreInvalid()
         {
-            _ = KeyStoreService.RestoreKeystoreFromFile(InvalidKeyStorePath);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = KeyStoreService.RestoreKeystoreFromFile(InvalidKeyStorePath);
+            });
         }
 
         [TestMethod]

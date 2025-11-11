@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Solnet.KeyStore.Exceptions;
+using System;
 
 namespace Solnet.KeyStore.Test
 {
@@ -22,10 +23,12 @@ namespace Solnet.KeyStore.Test
         private static readonly SecretKeyStoreService KeyStore = new();
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidKdfException))]
         public void TestInvalidKdf()
         {
-            _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidKdfCheckerPath);
+            Assert.Throws<InvalidKdfException>(() =>
+            {
+                _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidKdfCheckerPath);
+            });
         }
     }
 }

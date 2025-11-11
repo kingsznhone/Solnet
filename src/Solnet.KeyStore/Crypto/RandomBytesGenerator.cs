@@ -1,15 +1,15 @@
 #pragma warning disable CS1591
-using Org.BouncyCastle.Security;
+
+using System.Security.Cryptography;
 
 namespace Solnet.KeyStore.Crypto
 {
     public class RandomBytesGenerator : IRandomBytesGenerator
     {
-        private static readonly SecureRandom Random = new SecureRandom();
-
-        public byte[] GenerateRandomInitializationVector()
+        private static readonly RandomNumberGenerator Random = RandomNumberGenerator.Create();
+        public byte[] GenerateRandomAesGcmNonce()
         {
-            return GenerateRandomBytes(16);
+            return GenerateRandomBytes(12);
         }
 
         public byte[] GenerateRandomSalt()
@@ -20,7 +20,7 @@ namespace Solnet.KeyStore.Crypto
         private static byte[] GenerateRandomBytes(int size)
         {
             var bytes = new byte[size];
-            Random.NextBytes(bytes);
+            Random.GetBytes(bytes);
             return bytes;
         }
     }

@@ -1,11 +1,8 @@
 #pragma warning disable CS1591
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
+//using Org.BouncyCastle.Crypto.Digests;
 using Solnet.KeyStore.Exceptions;
 using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Solnet.KeyStore.Crypto
@@ -35,11 +32,8 @@ namespace Solnet.KeyStore.Crypto
 
         public byte[] CalculateKeccakHash(byte[] value)
         {
-            var digest = new KeccakDigest(256);
-            var output = new byte[digest.GetDigestSize()];
-            digest.BlockUpdate(value, 0, value.Length);
-            digest.DoFinal(output, 0);
-            return output;
+            using SHA3_256 sha3 = SHA3_256.Create();
+            return sha3.ComputeHash(value);
         }
 
         public byte[] GenerateMac(byte[] derivedKey, byte[] cipherText)
@@ -52,58 +46,65 @@ namespace Solnet.KeyStore.Crypto
 
         public byte[] GeneratePbkdf2Sha256DerivedKey(string password, byte[] salt, int count, int dklen)
         {
-            var pdb = new Pkcs5S2ParametersGenerator(new Sha256Digest());
-
-            //note Pkcs5PasswordToUtf8Bytes is the same as Encoding.UTF8.GetBytes(password)
-            //changing it to keep it as bouncy
-
-            pdb.Init(PbeParametersGenerator.Pkcs5PasswordToUtf8Bytes(password.ToCharArray()), salt,
-                count);
-            //if dklen == 32, then it is 256 (8 * 32)
-            var key = (KeyParameter)pdb.GenerateDerivedMacParameters(8 * dklen);
-            return key.GetKey();
+            return Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                count,
+                HashAlgorithmName.SHA256,
+                dklen
+            );
         }
 
-        public byte[] GenerateAesCtrCipher(byte[] iv, byte[] encryptKey, byte[] input)
+        public static (byte[] Ciphertext, byte[] Tag) GenerateAesGcmCipher(byte[] nonce, byte[] key, byte[] plaintext)
         {
-            var key = ParameterUtilities.CreateKeyParameter("AES", encryptKey);
+            // GCM tag length 16 bytes£¨128bit£©
+            byte[] ciphertext = new byte[plaintext.Length];
+            byte[] tag = new byte[16];
 
-            var parametersWithIv = new ParametersWithIV(key, iv);
+            using var aesGcm = new AesGcm(key,16);
+            aesGcm.Encrypt(nonce, plaintext, ciphertext, tag);
 
-            var cipher = CipherUtilities.GetCipher("AES/CTR/NoPadding");
-            cipher.Init(true, parametersWithIv);
-            return cipher.DoFinal(input);
+            return (ciphertext, tag);
         }
 
-        public byte[] DecryptScrypt(string password, byte[] mac, byte[] iv, byte[] cipherText, int n, int p, int r,
+        public static byte[] DecryptAesGcmCipher(byte[] nonce, byte[] key, byte[] ciphertext, byte[] tag)
+        {
+            byte[] plaintext = new byte[ciphertext.Length];
+
+            using var aesGcm = new AesGcm(key, 16);
+            aesGcm.Decrypt(nonce, ciphertext, tag, plaintext);
+
+            return plaintext;
+        }
+
+        public byte[] DecryptScrypt(string password, byte[] mac, byte[] nonce, byte[] cipherText, int n, int p, int r,
             byte[] salt, int dklen)
         {
             var derivedKey = GenerateDerivedScryptKey(GetPasswordAsBytes(password), salt, n, r, p, dklen, false);
-            return Decrypt(mac, iv, cipherText, derivedKey);
+            return Decrypt(mac, nonce, cipherText, derivedKey);
         }
 
-        public byte[] DecryptPbkdf2Sha256(string password, byte[] mac, byte[] iv, byte[] cipherText, int c, byte[] salt,
+        public byte[] DecryptPbkdf2Sha256(string password, byte[] mac, byte[] nonce, byte[] cipherText, int count, byte[] salt,
             int dklen)
         {
-            var derivedKey = GeneratePbkdf2Sha256DerivedKey(password, salt, c, dklen);
-            return Decrypt(mac, iv, cipherText, derivedKey);
+            var derivedKey = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                count,
+                HashAlgorithmName.SHA256,
+                dklen
+            );
+            return Decrypt(mac, nonce, cipherText, derivedKey);
         }
 
-        public byte[] Decrypt(byte[] mac, byte[] iv, byte[] cipherText, byte[] derivedKey)
+        public byte[] Decrypt(byte[] mac, byte[] nonce, byte[] cipherText, byte[] derivedKey)
         {
-            ValidateMac(mac, cipherText, derivedKey);
             var encryptKey = new byte[16];
             Array.Copy(derivedKey, encryptKey, 16);
-            var privateKey = GenerateAesCtrCipher(iv, encryptKey, cipherText);
+            
+            var privateKey = DecryptAesGcmCipher(nonce, encryptKey, cipherText, mac);
+            
             return privateKey;
-        }
-
-        private void ValidateMac(byte[] mac, byte[] cipherText, byte[] derivedKey)
-        {
-            var generatedMac = GenerateMac(derivedKey, cipherText);
-            if (generatedMac.ToHex() != mac.ToHex())
-                throw new DecryptionException(
-                    "Cannot derive the same mac as the one provided from the cipher and derived key");
         }
 
         public byte[] GetPasswordAsBytes(string password)

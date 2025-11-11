@@ -75,33 +75,39 @@ namespace Solnet.Wallet.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestInvalidPrivateKeyBytes()
         {
-            _ = new PrivateKey(InvalidPrivateKeyBytes.AsSpan());
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = new PrivateKey(InvalidPrivateKeyBytes.AsSpan());
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestNullPrivateKeyBytes()
         {
-            byte[] key = null;
-            _ = new PrivateKey(key);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                byte[] key = null;
+                _ = new PrivateKey(key);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestNullPrivateKeyString()
         {
-            string key = null;
-            _ = new PrivateKey(key);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                string key = null;
+                _ = new PrivateKey(key);
+            });
         }
 
         [TestMethod]
         public void TestPublicKeySpan()
         {
             PublicKey pk = new(PublicKeyBytes.AsSpan());
-            Assert.AreEqual(pk.Key, PublicKeyString);
+            Assert.AreEqual(PublicKeyString, pk.Key);
         }
 
         [TestMethod]
@@ -112,26 +118,32 @@ namespace Solnet.Wallet.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestInvalidPublicKeyBytes()
         {
-            _ = new PublicKey(InvalidPublicKeyBytes.AsSpan());
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = new PublicKey(InvalidPublicKeyBytes.AsSpan());
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestNullPublicKeyString()
         {
-            string key = null;
-            _ = new PublicKey(key);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                string key = null;
+                _ = new PublicKey(key);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TestNullPublicKeyBytes()
         {
-            byte[] key = null;
-            _ = new PublicKey(key);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                byte[] key = null;
+                _ = new PublicKey(key);
+            });
         }
 
         [TestMethod]
@@ -244,11 +256,13 @@ namespace Solnet.Wallet.Test
 
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestCreateProgramAddressException()
         {
-            _ = PublicKey.TryCreateProgramAddress(
-                new[] { Encoding.UTF8.GetBytes("SeedPubey1111111111111111111111111111111111") }, LoaderProgramId, out _);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = PublicKey.TryCreateProgramAddress(
+                    new[] { Encoding.UTF8.GetBytes("SeedPubey1111111111111111111111111111111111") }, LoaderProgramId, out _);
+            });
         }
 
         [TestMethod]
@@ -343,17 +357,21 @@ namespace Solnet.Wallet.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestCreateBadPublicKeyFatal_1()
         {
-            _ = new PublicKey("GUs5qLUfsEHkcMB9T38vjr18ypEhRuNWiePW2LoK4E3K ");
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = new PublicKey("GUs5qLUfsEHkcMB9T38vjr18ypEhRuNWiePW2LoK4E3K ");
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestCreateBadPublicKeyFatal_2()
         {
-            _ = new PublicKey("GUs5qLU&sEHkcMB9T38vjr18ypEhRuNWiePW2LoK4E3K");
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = new PublicKey("GUs5qLU&sEHkcMB9T38vjr18ypEhRuNWiePW2LoK4E3K");
+            });
         }
 
     }

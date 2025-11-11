@@ -111,17 +111,21 @@ namespace Solnet.Rpc.Test
             "Zyb20gU29sLk5ldA==";
 
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
         public void TransactionDeserializeExceptionTest()
         {
-            _ = Transaction.Deserialize(InvalidBase64Transaction);
+            Assert.Throws<Exception>(() =>
+            {
+                _ = Transaction.Deserialize(InvalidBase64Transaction);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void TransactionDeserializeArgumentNullExceptionTest()
         {
-            _ = Transaction.Deserialize((string)null);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _ = Transaction.Deserialize((string)null);
+            });
         }
 
         [TestMethod]

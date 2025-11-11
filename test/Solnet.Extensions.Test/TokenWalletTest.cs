@@ -248,87 +248,92 @@ namespace Solnet.Extensions.Test
         }
 
 
-        [TestMethod, ExpectedException(typeof(AggregateException))]
+        [TestMethod]
         public void TestTokenWalletLoadAddressCheck()
         {
-            // try to load a made up wallet address
-            var client = new MockTokenWalletRpc();
-            var tokens = new TokenMintResolver();
-            TokenWallet.Load(client, tokens, "FAKEkjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5");
+            Assert.Throws<AggregateException>(() =>
+            {
+                // try to load a made up wallet address
+                var client = new MockTokenWalletRpc();
+                var tokens = new TokenMintResolver();
+                TokenWallet.Load(client, tokens, "FAKEkjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5");
+            });
         }
 
 
-        [TestMethod, ExpectedException(typeof(AggregateException))]
+        [TestMethod]
         public void TestTokenWalletSendAddressCheck()
         {
+            Assert.Throws<AggregateException>(() =>
+            {
+                // get owner
+                var ownerWallet = new Wallet.Wallet(MnemonicWords);
+                var signer = ownerWallet.GetAccount(1);
+                Assert.AreEqual("9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5", signer.PublicKey.Key);
 
-            // get owner
-            var ownerWallet = new Wallet.Wallet(MnemonicWords);
-            var signer = ownerWallet.GetAccount(1);
-            Assert.AreEqual("9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5", signer.PublicKey.Key);
+                // get mocked RPC client
+                var client = new MockTokenWalletRpc();
+                client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
+                client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse.json");
 
-            // get mocked RPC client
-            var client = new MockTokenWalletRpc();
-            client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
-            client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse.json");
+                // define some mints
+                var tokens = new TokenMintResolver();
+                var testToken = new TokenMint.TokenDef("98mCaWvZYTmTHmimisaAQW4WGLphN1cWhcC7KtnZF819", "TEST", "TEST", 2);
+                tokens.Add(testToken);
 
-            // define some mints
-            var tokens = new TokenMintResolver();
-            var testToken = new TokenMint.TokenDef("98mCaWvZYTmTHmimisaAQW4WGLphN1cWhcC7KtnZF819", "TEST", "TEST", 2);
-            tokens.Add(testToken);
+                // load account and identify test token account with some balance
+                var wallet = TokenWallet.Load(client, tokens, "9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5");
+                Assert.IsNotNull(wallet);
+                var testTokenAccount = wallet.TokenAccounts().ForToken(testToken).WithAtLeast(5M).First();
+                Assert.IsFalse(testTokenAccount.IsAssociatedTokenAccount);
 
-            // load account and identify test token account with some balance
-            var wallet = TokenWallet.Load(client, tokens, "9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5");
-            Assert.IsNotNull(wallet);
-            var testTokenAccount = wallet.TokenAccounts().ForToken(testToken).WithAtLeast(5M).First();
-            Assert.IsFalse(testTokenAccount.IsAssociatedTokenAccount);
-
-            // trigger send to bogus target wallet
-            var targetOwner = "BADxzxtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5";
-            wallet.Send(testTokenAccount, 1M, targetOwner, signer.PublicKey, builder => builder.Build(signer));
-
+                // trigger send to bogus target wallet
+                var targetOwner = "BADxzxtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5";
+                wallet.Send(testTokenAccount, 1M, targetOwner, signer.PublicKey, builder => builder.Build(signer));
+            });
         }
 
 
         /// <summary>
         /// Check to make sure callee can not send source TokenWalletAccount from Wallet A using Wallet B
         /// </summary>
-        [TestMethod, ExpectedException(typeof(AggregateException))]
+        [TestMethod]
         public void TestSendTokenDefendAgainstAccountMismatch()
         {
+            Assert.Throws<AggregateException>(() =>
+            {
+                // define mints and get owner 
+                var client = new MockTokenWalletRpc();
+                var mintPubkey = new PublicKey("98mCaWvZYTmTHmimisaAQW4WGLphN1cWhcC7KtnZF819");
+                var tokens = new TokenMintResolver();
+                var testToken = new TokenMint.TokenDef(mintPubkey.Key, "TEST", "TEST", 2);
+                tokens.Add(testToken);
+                var ownerWallet = new Wallet.Wallet(MnemonicWords);
 
-            // define mints and get owner 
-            var client = new MockTokenWalletRpc();
-            var mintPubkey = new PublicKey("98mCaWvZYTmTHmimisaAQW4WGLphN1cWhcC7KtnZF819");
-            var tokens = new TokenMintResolver();
-            var testToken = new TokenMint.TokenDef(mintPubkey.Key, "TEST", "TEST", 2);
-            tokens.Add(testToken);
-            var ownerWallet = new Wallet.Wallet(MnemonicWords);
+                // load wallet a
+                var account_a = ownerWallet.GetAccount(1);
+                Assert.AreEqual("9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5", account_a.PublicKey.Key);
+                client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
+                client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse.json");
+                var wallet_a = TokenWallet.Load(client, tokens, account_a);
 
-            // load wallet a
-            var account_a = ownerWallet.GetAccount(1);
-            Assert.AreEqual("9we6kjtbcZ2vy3GSLLsZTEhbAqXPTRvEyoxa8wxSqKp5", account_a.PublicKey.Key);
-            client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
-            client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse.json");
-            var wallet_a = TokenWallet.Load(client, tokens, account_a);
+                // load wallet b
+                var account_b = ownerWallet.GetAccount(2);
+                Assert.AreEqual("3F2RNf2f2kWYgJ2XsqcjzVeh3rsEQnwf6cawtBiJGyKV", account_b.PublicKey.Key);
+                client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
+                client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse2.json");
+                var wallet_b = TokenWallet.Load(client, tokens, account_b);
 
-            // load wallet b
-            var account_b = ownerWallet.GetAccount(2);
-            Assert.AreEqual("3F2RNf2f2kWYgJ2XsqcjzVeh3rsEQnwf6cawtBiJGyKV", account_b.PublicKey.Key);
-            client.AddTextFile("Resources/TokenWallet/GetBalanceResponse.json");
-            client.AddTextFile("Resources/TokenWallet/GetTokenAccountsByOwnerResponse2.json");
-            var wallet_b = TokenWallet.Load(client, tokens, account_b);
+                // use other account as mock target and check derived PDA
+                var destination = ownerWallet.GetAccount(99);
 
-            // use other account as mock target and check derived PDA
-            var destination = ownerWallet.GetAccount(99);
+                // identify test token account with some balance in Wallet A
+                var account_in_a = wallet_a.TokenAccounts().ForToken(testToken).WithAtLeast(5M).First();
+                Assert.IsFalse(account_in_a.IsAssociatedTokenAccount);
 
-            // identify test token account with some balance in Wallet A
-            var account_in_a = wallet_a.TokenAccounts().ForToken(testToken).WithAtLeast(5M).First();
-            Assert.IsFalse(account_in_a.IsAssociatedTokenAccount);
-
-            // attempt to send using wallet b - this should not succeed
-            wallet_b.Send(account_in_a, 1M, destination, account_a.PublicKey, builder => builder.Build(account_b));
-
+                // attempt to send using wallet b - this should not succeed
+                wallet_b.Send(account_in_a, 1M, destination, account_a.PublicKey, builder => builder.Build(account_b));
+            });
         }
 
 

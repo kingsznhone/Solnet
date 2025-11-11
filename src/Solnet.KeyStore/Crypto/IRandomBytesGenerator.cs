@@ -5,7 +5,7 @@ namespace Solnet.KeyStore.Crypto
     {
 
 
-        byte[] GenerateRandomInitializationVector();
+        byte[] GenerateRandomAesGcmNonce();
         byte[] GenerateRandomSalt();
     }
 }

@@ -1,8 +1,5 @@
 #pragma warning disable CS1591
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Parameters;
+using System.Security.Cryptography;
 
 namespace Solnet.KeyStore.Crypto
 {
@@ -10,10 +7,13 @@ namespace Solnet.KeyStore.Crypto
     {
         private static byte[] SingleIterationPbkdf2(byte[] p, byte[] s, int dkLen)
         {
-            PbeParametersGenerator pGen = new Pkcs5S2ParametersGenerator(new Sha256Digest());
-            pGen.Init(p, s, 1);
-            KeyParameter key = (KeyParameter)pGen.GenerateDerivedMacParameters(dkLen * 8);
-            return key.GetKey();
+            return Rfc2898DeriveBytes.Pbkdf2(
+                p,
+                s,
+                iterations: 1,
+                HashAlgorithmName.SHA256,
+                dkLen
+            );
         }
 
         public static unsafe byte[] CryptoScrypt(byte[] password, byte[] salt, int n, int r, int p, int dkLen)

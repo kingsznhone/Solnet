@@ -9,13 +9,13 @@ namespace Solnet.KeyStore.Model
         {
         }
 
-        public CipherParams(byte[] iv)
+        public CipherParams(byte[] nonce)
         {
-            Iv = iv.ToHex();
+            Nonce = nonce.ToHex();
         }
 
-        [JsonPropertyName("iv")]
+        [JsonPropertyName("nonce")]
         // ReSharper disable once MemberCanBePrivate.Global
-        public string Iv { get; init; }
+        public string Nonce { get; init; }
     }
 }

@@ -344,10 +344,12 @@ namespace Solnet.Programs.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestNonceAccountDeserializationException()
         {
-            var nonceAccount = NonceAccount.Deserialize(Convert.FromBase64String(NonceAccountInvalidBase64Data));
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var nonceAccount = NonceAccount.Deserialize(Convert.FromBase64String(NonceAccountInvalidBase64Data));
+            });
         }
 
         [TestMethod]

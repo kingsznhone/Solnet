@@ -49,7 +49,7 @@ namespace Solnet.KeyStore.Services
 
         public virtual string GetCipherType()
         {
-            return "aes-128-ctr";
+            return "aes-128-gcm";
         }
 
         public KeyStore<T> EncryptAndGenerateKeyStore(string password, byte[] privateKey, string address, T kdfParams)
@@ -65,13 +65,11 @@ namespace Solnet.KeyStore.Services
 
             var cipherKey = KeyStoreCrypto.GenerateCipherKey(derivedKey);
 
-            var iv = RandomBytesGenerator.GenerateRandomInitializationVector();
+            var nonce = RandomBytesGenerator.GenerateRandomAesGcmNonce();
 
-            var cipherText = GenerateCipher(privateKey, iv, cipherKey);
+            (var cipherText,var mac) = GenerateCipher(privateKey, nonce, cipherKey);
 
-            var mac = KeyStoreCrypto.GenerateMac(derivedKey, cipherText);
-
-            var cryptoInfo = new CryptoInfo<T>(GetCipherType(), cipherText, iv, mac, salt, kdfParams, GetKdfType());
+            var cryptoInfo = new CryptoInfo<T>(GetCipherType(), cipherText, nonce, mac, salt, kdfParams, GetKdfType());
 
             var keyStore = new KeyStore<T>
             {
@@ -96,9 +94,9 @@ namespace Solnet.KeyStore.Services
             return DecryptKeyStore(password, keyStore);
         }
 
-        protected virtual byte[] GenerateCipher(byte[] privateKey, byte[] iv, byte[] cipherKey)
+        protected virtual (byte[],byte[]) GenerateCipher(byte[] privateKey, byte[] nonce, byte[] cipherKey)
         {
-            return KeyStoreCrypto.GenerateAesCtrCipher(iv, cipherKey, privateKey);
+            return KeyStoreCrypto.GenerateAesGcmCipher(nonce, cipherKey, privateKey);
         }
 
         protected abstract byte[] GenerateDerivedKey(string password, byte[] salt, T kdfParams);

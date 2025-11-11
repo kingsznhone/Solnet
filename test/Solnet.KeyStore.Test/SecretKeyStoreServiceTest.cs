@@ -3,6 +3,7 @@ using Solnet.KeyStore.Exceptions;
 using Solnet.KeyStore.Services;
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace Solnet.KeyStore.Test
@@ -41,17 +42,21 @@ namespace Solnet.KeyStore.Test
         private static readonly SecretKeyStoreService KeyStore = new();
 
         [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException))]
         public void TestKeyStorePathNotFound()
         {
-            _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidPath);
+            Assert.Throws<FileNotFoundException>(() =>
+            {
+                _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidPath);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(JsonException))]
         public void TestKeyStoreInvalidEmptyFilePath()
         {
-            _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidEmptyFilePath);
+            Assert.Throws<JsonException>(() =>
+            {
+                _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidEmptyFilePath);
+            });
         }
 
         [TestMethod]
@@ -63,17 +68,21 @@ namespace Solnet.KeyStore.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DecryptionException))]
         public void TestKeyStoreInvalidPassword()
         {
-            _ = KeyStore.DecryptKeyStoreFromFile("randomPassworasdd", ValidKeyStorePath);
+            Assert.Throws<AuthenticationTagMismatchException>(() =>
+            {
+                _ = KeyStore.DecryptKeyStoreFromFile("randomPassworasdd", ValidKeyStorePath);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestKeyStoreInvalid()
         {
-            _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidKeyStorePath);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = KeyStore.DecryptKeyStoreFromFile("randomPassword", InvalidKeyStorePath);
+            });
         }
 
         [TestMethod]
@@ -129,12 +138,14 @@ namespace Solnet.KeyStore.Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void TestInvalidPbkdf2KeyStore()
         {
-            var ks = new KeyStorePbkdf2Service();
-            var fileJson = File.ReadAllText(InvalidPbkdf2KeyStorePath);
-            _ = ks.DecryptKeyStoreFromJson("randomPassword", fileJson);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                var ks = new KeyStorePbkdf2Service();
+                var fileJson = File.ReadAllText(InvalidPbkdf2KeyStorePath);
+                _ = ks.DecryptKeyStoreFromJson("randomPassword", fileJson);
+            });
         }
     }
 }

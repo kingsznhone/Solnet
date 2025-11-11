@@ -52,7 +52,7 @@ namespace Solnet.KeyStore.Services
             if (keyStore == null) throw new ArgumentNullException(nameof(keyStore));
 
             return KeyStoreCrypto.DecryptScrypt(password, keyStore.Crypto.Mac.HexToByteArray(),
-                keyStore.Crypto.CipherParams.Iv.HexToByteArray(),
+                keyStore.Crypto.CipherParams.Nonce.HexToByteArray(),
                 keyStore.Crypto.CipherText.HexToByteArray(),
                 keyStore.Crypto.Kdfparams.N,
                 keyStore.Crypto.Kdfparams.P,

@@ -34,11 +34,13 @@ namespace Solnet.Programs.Test.Utilities
         };
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteU8Exception()
         {
-            byte[] sut = new byte[1];
-            sut.WriteU8(1, 2);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[1];
+                sut.WriteU8(1, 2);
+            });
         }
 
         [TestMethod]
@@ -50,11 +52,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteU16Exception()
         {
-            byte[] sut = new byte[2];
-            sut.WriteU16(1, 2);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[2];
+                sut.WriteU16(1, 2);
+            });
         }
 
         [TestMethod]
@@ -66,11 +70,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteBoolException()
         {
-            byte[] sut = new byte[2];
-            sut.WriteBool(true, 2);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[2];
+                sut.WriteBool(true, 2);
+            });
         }
 
         [TestMethod]
@@ -82,11 +88,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteU32Exception()
         {
-            byte[] sut = new byte[4];
-            sut.WriteU32(1, 4);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[4];
+                sut.WriteU32(1, 4);
+            });
         }
 
         [TestMethod]
@@ -98,11 +106,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteU64Exception()
         {
-            byte[] sut = new byte[8];
-            sut.WriteU64(1, 8);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[8];
+                sut.WriteU64(1, 8);
+            });
         }
 
         [TestMethod]
@@ -114,11 +124,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteS8Exception()
         {
-            byte[] sut = new byte[1];
-            sut.WriteS8(1, 2);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[1];
+                sut.WriteS8(1, 2);
+            });
         }
 
         [TestMethod]
@@ -130,11 +142,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteS16Exception()
         {
-            byte[] sut = new byte[2];
-            sut.WriteS16(1, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[2];
+                sut.WriteS16(1, 1);
+            });
         }
 
         [TestMethod]
@@ -146,11 +160,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteS32Exception()
         {
-            byte[] sut = new byte[4];
-            sut.WriteS32(1, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[4];
+                sut.WriteS32(1, 1);
+            });
         }
 
         [TestMethod]
@@ -162,11 +178,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteS64Exception()
         {
-            byte[] sut = new byte[8];
-            sut.WriteS64(1, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[8];
+                sut.WriteS64(1, 1);
+            });
         }
 
         [TestMethod]
@@ -178,11 +196,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteSpanException()
         {
-            byte[] sut = new byte[32];
-            sut.WriteSpan(PublicKeyBytes, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[32];
+                sut.WriteSpan(PublicKeyBytes, 1);
+            });
         }
 
         [TestMethod]
@@ -194,11 +214,13 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWritePublicKeyException()
         {
-            byte[] sut = new byte[32];
-            sut.WritePubKey(new PublicKey(PublicKeyBytes), 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[32];
+                sut.WritePubKey(new PublicKey(PublicKeyBytes), 1);
+            });
         }
 
         [TestMethod]
@@ -210,22 +232,24 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteBigIntegerException()
         {
-            byte[] sut = new byte[16];
-            sut.WriteBigInt(new BigInteger(15000000000000000000000000D), 8, 16);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                byte[] sut = new byte[16];
+                sut.WriteBigInt(new BigInteger(15000000000000000000000000D), 8, 16);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteBigIntegerException2()
         {
-            BigInteger bi = BigInteger.Parse("34028236692093846346337460743176821145");
-
-            byte[] buffer = new byte[10];
-
-            buffer.WriteBigInt(bi, 0, 10);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                BigInteger bi = BigInteger.Parse("34028236692093846346337460743176821145");
+                byte[] buffer = new byte[10];
+                buffer.WriteBigInt(bi, 0, 10);
+            });
         }
 
 
@@ -245,12 +269,14 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteDoubleException()
         {
-            const double value = 1.34534534564565;
-            byte[] bytes = new byte[8];
-            bytes.WriteDouble(value, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                const double value = 1.34534534564565;
+                byte[] bytes = new byte[8];
+                bytes.WriteDouble(value, 1);
+            });
         }
 
         [TestMethod]
@@ -263,12 +289,14 @@ namespace Solnet.Programs.Test.Utilities
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestWriteSingleException()
         {
-            const float value = 1.34534534f;
-            byte[] bytes = new byte[4];
-            bytes.WriteSingle(value, 1);
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
+                const float value = 1.34534534f;
+                byte[] bytes = new byte[4];
+                bytes.WriteSingle(value, 1);
+            });
         }
 
         [TestMethod]
