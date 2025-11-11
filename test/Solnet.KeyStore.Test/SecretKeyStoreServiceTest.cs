@@ -1,5 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Solnet.KeyStore.Exceptions;
 using Solnet.KeyStore.Services;
 using System;
 using System.IO;
@@ -27,6 +26,7 @@ namespace Solnet.KeyStore.Test
             255,40,171,137,93,9,205,28,7,207,88,194,91,
             219,232
         };
+
         private static readonly byte[] SeedWithPassphrase =
         {
             163,4,184,24,182,219,174,214,13,54,158,198,

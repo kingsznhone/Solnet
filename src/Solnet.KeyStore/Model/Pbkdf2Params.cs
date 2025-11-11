@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System.Text.Json.Serialization;
 
 namespace Solnet.KeyStore.Model
@@ -9,7 +10,6 @@ namespace Solnet.KeyStore.Model
         public int Count { get; init; }
 
         [JsonPropertyName("prf")]
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Prf { get; init; }
     }
 }

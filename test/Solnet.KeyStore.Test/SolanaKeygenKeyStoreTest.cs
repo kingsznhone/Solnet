@@ -20,6 +20,7 @@ namespace Solnet.KeyStore.Test
 
         private const string StringKeyStoreSeedWithoutPassphrase =
             "[69,191,12,22,125,16,119,72,240,150,74,197,249,221,54,164,172,222,248,202,22,242,96,43,105,164,101,52,155,41,46,6,107,27,120,68,31,183,113,110,148,151,206,38,195,198,108,78,97,66,196,191,82,41,240,33,253,9,89,19,75,196,171,104]";
+
         private const string ExpectedStringKeyStoreAddress = "8D6vFRiysWWBwuf3HY7RrPt8EiFoP9o94LzySZqD4HsV";
 
         private static readonly byte[] SeedWithPassphrase =
@@ -84,6 +85,5 @@ namespace Solnet.KeyStore.Test
             var wallet = KeyStoreService.RestoreKeystore(StringKeyStoreSeedWithoutPassphrase);
             Assert.AreEqual(ExpectedStringKeyStoreAddress, wallet.Account.PublicKey.Key);
         }
-
     }
 }

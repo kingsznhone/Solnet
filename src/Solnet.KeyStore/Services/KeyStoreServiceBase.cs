@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using Solnet.KeyStore.Crypto;
 using Solnet.KeyStore.Model;
 using System;
@@ -21,7 +22,6 @@ namespace Solnet.KeyStore.Services
             KeyStoreCrypto = keyStoreCrypto;
         }
 
-
         protected KeyStoreServiceBase(IRandomBytesGenerator randomBytesGenerator)
         {
             RandomBytesGenerator = randomBytesGenerator;
@@ -41,6 +41,7 @@ namespace Solnet.KeyStore.Services
         }
 
         public abstract KeyStore<T> DeserializeKeyStoreFromJson(string json);
+
         public abstract string SerializeKeyStoreToJson(KeyStore<T> keyStore);
 
         public abstract byte[] DecryptKeyStore(string password, KeyStore<T> keyStore);
@@ -67,7 +68,7 @@ namespace Solnet.KeyStore.Services
 
             var nonce = RandomBytesGenerator.GenerateRandomAesGcmNonce();
 
-            (var cipherText,var mac) = GenerateCipher(privateKey, nonce, cipherKey);
+            (var cipherText, var mac) = GenerateCipher(privateKey, nonce, cipherKey);
 
             var cryptoInfo = new CryptoInfo<T>(GetCipherType(), cipherText, nonce, mac, salt, kdfParams, GetKdfType());
 
@@ -94,7 +95,7 @@ namespace Solnet.KeyStore.Services
             return DecryptKeyStore(password, keyStore);
         }
 
-        protected virtual (byte[],byte[]) GenerateCipher(byte[] privateKey, byte[] nonce, byte[] cipherKey)
+        protected virtual (byte[], byte[]) GenerateCipher(byte[] privateKey, byte[] nonce, byte[] cipherKey)
         {
             return KeyStoreCrypto.GenerateAesGcmCipher(nonce, cipherKey, privateKey);
         }

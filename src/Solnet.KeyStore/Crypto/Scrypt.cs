@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System.Security.Cryptography;
 
 namespace Solnet.KeyStore.Crypto
@@ -41,13 +42,12 @@ namespace Solnet.KeyStore.Crypto
             return SingleIterationPbkdf2(password, ba, dkLen);
         }
 
-
         /// <summary>
         /// Copies a specified number of bytes from a source pointer to a destination pointer.
         /// </summary>
         private static unsafe void BulkCopy(void* dst, void* src, int len)
         {
-            System.Runtime.CompilerServices.Unsafe.CopyBlock(dst, src,(uint) len);
+            System.Runtime.CompilerServices.Unsafe.CopyBlock(dst, src, (uint)len);
         }
 
         /// <summary>
@@ -286,6 +286,5 @@ namespace Solnet.KeyStore.Crypto
                 Encode32(&b[4 * k], x[k]);
             }
         }
-
     }
 }

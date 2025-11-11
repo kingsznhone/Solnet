@@ -7,6 +7,7 @@ namespace Solnet.KeyStore.Crypto
     public class RandomBytesGenerator : IRandomBytesGenerator
     {
         private static readonly RandomNumberGenerator Random = RandomNumberGenerator.Create();
+
         public byte[] GenerateRandomAesGcmNonce()
         {
             return GenerateRandomBytes(12);

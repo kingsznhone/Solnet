@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System.Text.Json.Serialization;
 
 namespace Solnet.KeyStore.Model
@@ -7,7 +8,6 @@ namespace Solnet.KeyStore.Model
     {
         // ReSharper disable once StringLiteralTypo
         [JsonPropertyName("dklen")]
-        // ReSharper disable once IdentifierTypo
         public int Dklen { get; init; }
 
         [JsonPropertyName("salt")]

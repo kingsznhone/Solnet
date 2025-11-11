@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ namespace Solnet.KeyStore
 {
     public static class Utils
     {
-
         /// <summary>
         /// Performs the hex to byte array conversion.
         /// </summary>

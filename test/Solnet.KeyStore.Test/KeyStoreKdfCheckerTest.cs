@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Solnet.KeyStore.Exceptions;
-using System;
 
 namespace Solnet.KeyStore.Test
 {

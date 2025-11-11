@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System.Text.Json.Serialization;
 
 namespace Solnet.KeyStore.Model
@@ -15,7 +16,6 @@ namespace Solnet.KeyStore.Model
         }
 
         [JsonPropertyName("nonce")]
-        // ReSharper disable once MemberCanBePrivate.Global
         public string Nonce { get; init; }
     }
 }

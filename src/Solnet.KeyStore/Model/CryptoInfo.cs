@@ -1,4 +1,5 @@
 #pragma warning disable CS1591
+
 using System.Text.Json.Serialization;
 
 namespace Solnet.KeyStore.Model
@@ -22,32 +23,23 @@ namespace Solnet.KeyStore.Model
         }
 
         [JsonPropertyName("cipher")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Cipher { get; }
 
         [JsonPropertyName("ciphertext")]
-        // ReSharper disable once MemberCanBePrivate.Global
         public string CipherText { get; init; }
 
         // ReSharper disable once StringLiteralTypo
         [JsonPropertyName("cipherparams")]
-        // ReSharper disable once MemberCanBePrivate.Global
         public CipherParams CipherParams { get; init; }
 
         [JsonPropertyName("kdf")]
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Kdf { get; }
 
         [JsonPropertyName("mac")]
-        // ReSharper disable once MemberCanBePrivate.Global
         public string Mac { get; init; }
 
         // ReSharper disable once StringLiteralTypo
         [JsonPropertyName("kdfparams")]
-        // ReSharper disable once IdentifierTypo
-        // ReSharper disable once MemberCanBePrivate.Global
         public TKdfParams Kdfparams { get; init; }
     }
 }

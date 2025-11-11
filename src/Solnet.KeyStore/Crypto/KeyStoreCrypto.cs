@@ -1,6 +1,6 @@
 #pragma warning disable CS1591
+
 //using Org.BouncyCastle.Crypto.Digests;
-using Solnet.KeyStore.Exceptions;
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -61,7 +61,7 @@ namespace Solnet.KeyStore.Crypto
             byte[] ciphertext = new byte[plaintext.Length];
             byte[] tag = new byte[16];
 
-            using var aesGcm = new AesGcm(key,16);
+            using var aesGcm = new AesGcm(key, 16);
             aesGcm.Encrypt(nonce, plaintext, ciphertext, tag);
 
             return (ciphertext, tag);
@@ -101,9 +101,9 @@ namespace Solnet.KeyStore.Crypto
         {
             var encryptKey = new byte[16];
             Array.Copy(derivedKey, encryptKey, 16);
-            
+
             var privateKey = DecryptAesGcmCipher(nonce, encryptKey, cipherText, mac);
-            
+
             return privateKey;
         }
 
